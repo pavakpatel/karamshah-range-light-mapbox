@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Missile Range from Kermanshah</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.3.0/turf.min.js" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.3.0/turf.min.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script>
+
+mapboxgl.accessToken = 'pk.eyJ1IjoicGF2YWtwYXRlbCIsImEiOiJja3IwbnNqejUxdHpmMm5tbnFoa2tsNDcxIn0.Mi-o-UdZ0hTFy2iN7QBHrg';
+
+
+const LAT = 34.314167;
+const LONG = 47.0650000;
+
+let map = new mapboxgl.Map({
+	container: 'map', // container id
+	style: 'mapbox://styles/mapbox/light-v10', // style URL
+	center: [LONG, LAT], // starting position [lng, lat]
+	zoom: 12 // starting zoom
+});
+
+
+// Add Circle Radius
+const center = [LONG, LAT];
+const radius = 300;
+const options = {
+	steps: 50,
+	units: "kilometers",
+};
+
+const center2 = [LONG, LAT];
+const radius2 = 500;
+const options2 = {
+	steps: 50,
+	units: "kilometers",
+};
+
+const center3 = [LONG, LAT];
+const radius3 = 1000;
+const options3 = {
+	steps: 50,
+	units: "kilometers",
+};
+
+const center4 = [LONG, LAT];
+const radius4 = 2000;
+const options4 = {
+	steps: 50,
+	units: "kilometers",
+};
+
+const circle = turf.circle(center, radius, options);
+const circle2 = turf.circle(center2, radius2, options2);
+const circle3 = turf.circle(center3, radius3, options3);
+const circle4 = turf.circle(center4, radius4, options4);
+
+
+map.on('load', function(e) {
+	
+	map.addSource("circleData", {
+		type: "geojson",
+		data: circle
+	});
+		
+		map.addSource("circleData2", {
+		type: "geojson",
+		data: circle2
+	});
+		
+		map.addSource("circleData3", {
+		type: "geojson",
+		data: circle3
+	});
+		
+		map.addSource("circleData4", {
+		type: "geojson",
+		data: circle4
+	});
+
+	map.addLayer({
+		id: "circle-fill",
+		type: "fill",
+		source: "circleData",
+		paint: {
+			"fill-color": "yellow",
+			"fill-opacity": 0.6
+   		//	"circle-stroke-width": 5,
+    	//	"circle-stroke-color": "black"
+		}
+	});
+		
+		map.addLayer({
+		id: "circle-fill2",
+		type: "fill",
+		source: "circleData2",
+		paint: {
+			"fill-color": "red",
+			"fill-opacity": 0.5
+		}
+	});
+		
+		map.addLayer({
+		id: "circle-fill3",
+		type: "fill",
+		source: "circleData3",
+		paint: {
+			"fill-color": "green",
+			"fill-opacity": 0.4
+		}
+	});
+		
+		map.addLayer({
+		id: "circle-fill4",
+		type: "fill",
+		source: "circleData4",
+		paint: {
+			"fill-color": "white",
+			"fill-opacity": 0.3
+		}
+	});
+
+	const popup = new mapboxgl.Popup({
+		closeButton: false,
+		closeOnClick: false
+	});
+
+	//Popup on Click
+	//map.on("click","circle-fill", (e) => {
+	//	const circlett = e.features[0];
+	//		popup.setHTML('<b>300 KM</b>')
+	//		popup.setLngLat([LONG, LAT])
+	//		popup.addTo(map);
+	//	});
+
+		//Popup on Hover
+		map.on("mouseenter", "circle-fill", () => {
+			map.getCanvas().style.cursor = "pointer";
+			popup.setHTML('<b>300 KM</b>')
+			popup.setLngLat([LONG, LAT])
+			popup.addTo(map);
+		});
+
+		map.on("mouseleave","circle-fill", () => {
+			map.getCanvas().style.cursor = ""
+			popup.remove();
+		});
+
+		map.on("mouseenter", "circle-fill2", () => {
+			map.getCanvas().style.cursor = "pointer";
+			popup.setHTML('<b>500 KM</b>')
+			popup.setLngLat([LONG, LAT])
+			popup.addTo(map);
+		});
+
+		map.on("mouseleave","circle-fill2", () => {
+			map.getCanvas().style.cursor = ""
+			popup.remove();
+		});
+
+		map.on("mouseenter", "circle-fill3", () => {
+			map.getCanvas().style.cursor = "pointer";
+			popup.setHTML('<b>1000 KM</b>')
+			popup.setLngLat([LONG, LAT])
+			popup.addTo(map);
+		});
+
+		map.on("mouseleave","circle-fill3", () => {
+			map.getCanvas().style.cursor = ""
+			popup.remove();
+		});
+
+		map.on("mouseenter", "circle-fill4", () => {
+			map.getCanvas().style.cursor = "pointer";
+			popup.setHTML('<b>2000 KM</b>')
+			popup.setLngLat([LONG, LAT])
+			popup.addTo(map);
+		});
+
+		map.on("mouseleave","circle-fill4", () => {
+			map.getCanvas().style.cursor = ""
+			popup.remove();
+		});
+	});
+	// Add marker
+	let marker = new mapboxgl.Marker({
+		draggable: true
+		})
+		.setLngLat([LONG, LAT])
+		.addTo(map);
+
+
+
+
+</script>
+
+</body>
+</html>
